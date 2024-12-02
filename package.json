@@ -33,6 +33,7 @@
 		"vite": "^5.0.3"
 	},
 	"dependencies": {
+		"3d-force-graph": "^1.73.6",
 		"@atproto/api": "^0.13.18",
 		"@atproto/identity": "^0.4.3",
 		"@duckdb/duckdb-wasm": "^1.29.0",
@@ -42,7 +43,6 @@
 		"@threlte/core": "^8.0.0-next.30",
 		"@threlte/extras": "^9.0.0-next.39",
 		"@types/three": "^0.170.0",
-		"3d-force-graph": "^1.73.6",
 		"d3": "^7.9.0",
 		"d3-cloud": "^1.2.7",
 		"d3-scale": "^4.0.2",
@@ -52,6 +52,7 @@
 		"gsap": "^3.12.5",
 		"pixi.js": "^8.5.2",
 		"postprocessing": "^6.36.4",
+		"stats.js": "^0.17.0",
 		"svelte-relative-time": "^0.0.6",
 		"three": "^0.170.0",
 		"uber-noise": "^0.2.2"
