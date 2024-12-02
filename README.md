@@ -13,15 +13,15 @@ collection of visualizations for bluesky, using the bluesky api, tailwind, svelt
 
 clone repo
 ```
-git clone https://github.com/flo-bit/bluesky-visualizers.git
+git clone https://github.com/Dax911/chaotic-bluesky-visualizers
 ```
 
 install dependencies
 ```
-npm install
+bun i
 ```
 
-run dev server
+To run the dev server
 ```
-npm run dev
+bun run dev
 ```
