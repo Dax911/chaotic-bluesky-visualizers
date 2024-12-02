@@ -225,6 +225,8 @@
 	}
 
 	async function makeGraph(data: { links: any[]; nodes: any[] }) {
+		performance.mark('graphStart');
+
 		const module = await import('3d-force-graph');
 		const ForceGraph3D = module.default;
 
@@ -244,6 +246,7 @@
 		currentDataSet.add(data.nodes[0].id);
 
 		let currentIndex = 1;
+		let lastRenderTime = performance.now();
 
 		const distance = 300;
 		const Graph = ForceGraph3D({
@@ -286,7 +289,32 @@
             stats?.end();
 		});
 
+		const updateGraph = () => {
+        if (currentIndex >= data.nodes.length) {
+            performanceMetrics.renderTime = performance.now() - performance.getEntriesByName('graphStart')[0].startTime;
+            return;
+        }
 
+        const currentTime = performance.now();
+        const deltaTime = currentTime - lastRenderTime;
+        lastRenderTime = currentTime;
+
+        currentData.nodes.push(data.nodes[currentIndex]);
+        currentDataSet.add(data.nodes[currentIndex].id);
+        currentData.links.push(
+            ...data.links.filter(
+                (link) => currentDataSet.has(link.source) && currentDataSet.has(link.target)
+            )
+        );
+
+        Graph.graphData(currentData);
+        currentIndex++;
+        
+        requestAnimationFrame(updateGraph);
+    };
+
+    requestAnimationFrame(updateGraph);
+    
 		let interval = setInterval(() => {
 			if (currentIndex >= data.nodes.length) {
 				clearInterval(interval);
@@ -368,9 +396,15 @@
 	{/if}
 	{#if !loading && performanceMetrics.dataLoadTime > 0}
     <div class="fixed bottom-4 right-4 bg-black/80 p-4 rounded-lg text-xs">
-		<p>Data Load: {(performanceMetrics.dataLoadTime / 1000).toFixed(2)}s</p>
-		<p>Graph Build: {(performanceMetrics.graphBuildTime / 1000).toFixed(2)}s</p>
-		<p>Render Time: {(performanceMetrics.renderTime / 1000).toFixed(2)}s</p>
+		<p>Data Load: {(performanceMetrics.dataLoadTime / 1000).toFixed(4)}s</p>
+		<p>Graph Build: {(performanceMetrics.graphBuildTime / 1000).toFixed(4)}s</p>
+		<p>Render Time: {(performanceMetrics.renderTime / 1000).toFixed(4)}s</p>
+		<p>Profile Fetch: {(performanceMetrics.profileFetchTime / 1000).toFixed(4)}s</p>
+		<p>Base Follows: {(performanceMetrics.baseFollowsTime / 1000).toFixed(4)}s</p>
+		<p>Follows Fetch: {(performanceMetrics.followsFetchTime / 1000).toFixed(4)}s</p>
+		<p>Edge Process: {(performanceMetrics.edgeProcessTime / 1000).toFixed(4)}s</p>
+		<p>Node Process: {(performanceMetrics.nodeProcessTime / 1000).toFixed(4)}s</p>
+		<p>Total Load: {(performanceMetrics.totalLoadTime / 1000).toFixed(4)}s</p>
     </div>
 {/if}
 </div>
